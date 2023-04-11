@@ -1,0 +1,630 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[slovene]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+\usepackage{amsfonts,amssymb,amsmath}
+\usepackage{graphicx}
+\usepackage{makecell}
+\usepackage{url}
+
+
+\def\qed{$\hfill\Box$}   % konec dokaza
+\def\qedm{\qquad\Box}   % konec dokaza v matematičnem načinu
+\newtheorem{izrek}{Izrek}
+\newtheorem{trditev}{Trditev}
+\newtheorem{posledica}{Posledica}
+\newtheorem{lema}{Lema}
+\newtheorem{pripomba}{Pripomba}
+\newtheorem{definicija}{Definicija}
+\newtheorem{zgled}{Zgled}
+
+\title{Gaussov algoritem za računanje datuma velike noči \\ 
+\Large Seminar}
+\author{Marjetka Zupan \\
+Fakulteta za matematiko in fiziko \\
+Oddelek za matematiko}
+\date{\today}
+
+\begin{document}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\maketitle
+\begin{abstract}
+   %TODO
+\end{abstract}
+
+%TODO ključne besede
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Uvod}
+
+Anekdota pravi, da si mati Johanna Carla Friedricha Gaussa ni zapomnila 
+točnega datuma rojstva svojega sina. Vedela je le, da je bil rojen v sredo, 
+8 dni pred praznikom Jezusovega vnebohoda leta 1777. Da bi ugotovil, kdaj 
+je bil rojen, je Gauss razvil algoritem za izračun datuma velike noči. 
+
+Sam v uvodu pravi, da namen njegovega dela ni razprava že znanih običajnih postopkov določanja
+tega datuma. Ti so po Gaussovih besedah enostavni, če bralec pozna pomen 
+nekaterih pojmov, ki se pri formulaciji postopka navadno uporabljajo 
+(zlato število, epakta, velikonočni mejnik, Sončev cikel, nedeljska črka), 
+in ima pred seboj potrebne pomožne tabele.
+Želel je poiskati način za določanje tega datuma brez dodatnih pripomočkov 
+(tabel), zgolj z uporabo enostavnih računskih operacij, ``ki si jih bo vsak, 
+ki se mu to zdi vredno truda, z lahkoto zapomnil.'' \cite{gauss} 
+
+Svoj algoritem je pri 23 letih objavil v članku ``Berechnung des Osterfestes 
+(Izračun datuma velike noči).'' \cite{gauss}
+%TODO preveri zapis naslova in narekovajev
+%TODO morajo biti ti izrazi italic?
+%TODO opombe na latinske izraze - 
+%    Terminus Paschalis = velikonočni mejnik
+%    epactae
+%    Numerus aureus = zlato število
+%    Littera Dominicalis = nedeljska črka
+%    circulus solaris = spncev cikel
+%TODO pojdi cez pravila oblikovanja in popravi vse sorte
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Kdaj sploh praznujemo veliko noč?} %TODO sprememba naslova?
+
+Da bomo lahko razumeli Gaussov algoritem za določanje datuma velike noči, 
+moramo najprej vedeti, kdaj sploh praznujemo veliko noč. 
+
+Večino praznikov praznujemo ob obletnicah dogodkov, ki se jih spominjamo, in 
+velika noč v tem smislu ni izjema. Težava pa je, da natančnega datuma vstajenja %TODO oblikuj stavek
+ne poznamo. V času Jezusovega življenja so namreč na področju, kjer je živel, 
+uporabljali nenatančen hebrejski koledar, ki je temeljil na opazovanju lune. 
+Obsegal je 12 mesecev, pri čemer se je vsak začel ob prazni luni. Ker je po 
+določenem času prišlo do zamika glede na gibanje Zemlje okoli Sonca (isti mesec 
+ni vedno padel v isti letni čas), so po potrebi dodali še trinajsti mesec. To 
+dodajanje ni bilo sistematično, temveč so se o njem odločali sproti, zato je za 
+oddaljene datume v hebrejskem koledarju danes nemogoče določiti datum po našem 
+štetju. \cite{calendar}
+
+O datumu Jezusovega križanja se je ohranilo le to, da se je zgodilo v petek tik 
+pred pasho, judovskim praznikom, ki so ga začeli praznovati 15. dne 
+pomladnega meseca nisana. Ker so se meseci judovskega koledarja začenjali s 
+prazno luno, se je torej zgodilo ob polni luni. Od tod pride naivna in splošno 
+znana ``definicija'' tega datuma -- prva nedelja po prvi spomladanski polni 
+luni. Vendar ta ``definicija'' ni natančna. Pomlad se namreč po vsem svetu ne 
+začne na isti dan, pa tudi datum polne lune zaradi različnih časovnih pasov ni 
+po vsem svetu isti. \cite{encyclopedia,zentralratderjuden,calendar}
+%TODO enojni ali dvojni narekovaji pri definiciji
+
+Velika noč se je do leta 325 praznovala na dan, ki ga je sproti določil papež, 
+leta 325 pa so na podlagi opazovanj določili postopek za izračun datuma prve 
+spomladanske polne lune in veliko noč praznovali na prvo nedeljo po tem datumu. 
+Tako določeni datumi polnih lun se največkrat ujemajo z dejanskim datumom 
+astronomske polne lune, v splošnem pa od njega ne odstopajo za več kot 3 dni. 
+Ker je leta 325 enakonočje nastopilo 20.\ marca, so za prvi spomladanski dan 
+vzeli ta datum. %TODO sklic na članek
+
+Ker so pri določanju datuma velike noči pomembni le datumi iz napovedi, 
+namesto o prvi spomladanski polni luni raje govorimo o pashalni polni luni.
+
+Za lažje razumevanje uvedimo še pojem luninega meseca. To je čas med dvema 
+zaporednima praznima lunama. %TODO definicija? - lunin mesec
+
+\subsection*{Datum velike noči po julijanskem koledarju}
+
+Leta 325 je bil v uporabi julijanski koledar. Tega sestavljajo običajna leta, 
+dolga 365 dni, in prestopna leta, dolga 366 dni, pri čemer je vsako s 4 
+deljivo leto prestopno. V povprečju tako eno leto v julijanskem koledarju 
+traja 365,25 dni. Postopek določanja pashalne polne lune temelji na metonskem 
+ciklu, opazki, da je v povprečju 19 let v julijanskem koledarju dolgih natanko 
+toliko kot 235 luninih mesecev. Tako se datumi praznih lun in posledično tudi 
+datumi pashalnih polnih lun vsakih 19 let ponavljajo. Vsakemu letu torej lahko 
+glede na položaj v tem ciklu pripišemo število med 1 in 19. To število imenujemo 
+\emph{zlato število} in ga izračunamo po formuli $n_a = (A \bmod 19) + 1$, pri 
+čemer smo z $A$ označili leto, za katero želimo izračunati zlato število. Datum 
+pashalne polne lune potem lahko preberemo iz tabele, veliko noč pa praznujemo 
+na prvo nedeljo po tem datumu. %TODO definicija? - zlato število; ne uporabimo nedeljske črke - naj brišem v uvodu?
+
+\begin{table}
+    \centering
+    \caption{Datumi pashalnih polnih lun po julijanskem koledarju glede na izračunano zlato število leta}
+    \label{julijanski-t}
+    \begin{tabular}{| c c | c c | c c |}
+        \hline
+        \makecell{zlato \\ število} & \makecell{pashalna \\ polna luna} & \makecell{zlato \\ število} & \makecell{pashalna \\ polna luna} & \makecell{zlato \\ število} & \makecell{pashalna \\ polna luna} \\ \hline
+        1 & 5.\ april & 8 & 18.\ april & 15 & 1.\ april \\  
+        2 & 25.\ marec & 9 & 7.\ april & 16 & 21.\ marec \\
+        3 & 13.\ april & 10 & 27.\ marec & 17 & 9.\ april \\
+        4 & 2.\ april & 11 & 15.\ april & 18 & 29.\ marec \\
+        5 & 22.\ marec & 12 & 4.\ april & 19 & 17.\ april \\
+        6 & 10.\ april & 13 & 24.\ marec & & \\
+        7 & 30.\ marec & 14 & 12.\ april & & \\ \hline
+    \end{tabular}
+\end{table}
+
+\subsection*{Datum velike noči po gregorijanskem koledarju}
+
+Določanje datuma velike noči se zaplete leta 1582, ko so zaradi neskladja med 
+dolžino Zemljinega obhoda okoli Sonca in dolžine julijanskega leta uvedli nov, 
+gregorijanski koledar. Tudi tega sestavljajo običajna, 365 dni dolga leta in 
+prestopna, 366 dni dolga leta, le da prestopno leto nastopi vsako s 4 deljivo 
+leto, ki ni hkrati deljivo tudi s 100, pri tem pa so leta, ki so deljiva s 400, 
+vseeno prestopna. Nov koledar naj bi to neskladje zmanjšal.
+Poleg reforme koledarja pa so leta 1582 uvedli tudi reformo določanja datuma 
+velike noči. Metonski cikel se je namreč izkazal za netočnega, poleg tega pa 
+je bil z gregorijanskim koledarjem še slabše usklajen kot z julijanskim. %TODO opomba z dolžino leta in cikla
+
+V ta namen so v postopek določanja datuma velike noči uvedli epakto. To je 
+mera za starost lune na določen dan in je enaka številu dni od dneva, ko je 
+luna prvič vidna (to je praviloma dan po prazni luni). V julijanskem koledarju 
+epakto leta definiramo kot epakto lune na 22. marec, v gregorijanskem 
+koledarju pa kot epakto lune ob začetku leta. %TODO definicija?
+
+Epakto lahko izračunamo s pomočjo zlatega števila.
+Če označimo $e' = (11 \cdot (n_a - 1)) \bmod 30$, je ob predpostavki, da za 
+julijanski koledar velja metonski cikel, epakta po julijanskem koledarju enaka 
+$e'$, razen v primeru, ko je $e' = 0$ in namesto 0 raje vzamemo 30, saj je bilo 
+število 0 še nekaj stoletij nazaj precej nepriljubljeno. Ker to na rezultate v 
+nadaljevanju ne vpliva, bomo mi v tem primeru za epakto vseeno vzeli 0.
+
+V gregorijanskem koledarju računanje epakte prilagodimo in uvedemo nekaj 
+popravkov, da bo izračunana vrednost čim bližje pravi, astronomsko določeni. 
+Epakto v gregorijanskem koledarju določimo po naslednjem postopku:
+
+\begin{enumerate}
+    \item Uporabimo formulo za julijanski koledar 
+        $e_j = (11 \cdot (n_a - 1)) \bmod 30$
+    \item Uvedemo solarno enačbo $S = \lfloor \frac{3 \cdot C}{4} \rfloor $ 
+        \footnote{Solarna enačba odraža razliko med julijanskim in gregorijanskim koledarjem in se 
+        vsako leto, ki je prestopno v julijanskem, ne pa tudi v gregorijanskem 
+        koledarju, poveča za 1.}
+    \item Uvedemo lunarno enačbo $L = \lfloor \frac{8 \cdot C + 5}{25} \rfloor $
+        \footnote{Lunarna enačba odraža napako pri uporabi metonskega cikla glede na gregorijanski 
+        koledar in se vsakih 2500 let osemkrat poveča za 1.}
+    \item Izračunamo $e_g' = e_j - S + L + 8$. %TODO od kje 8
+    \item Podamo gregorijansko epakto $e_g' \bmod 30$, pri čemer so včasih ponovno 
+        namesto 0 vzeli 30, a se bomo mi temu tudi tukaj izognili. %TODO preveri, ali še kje vzameš 30
+\end{enumerate}
+
+Datum velike noči po gregorijanskem koledarju določimo glede na epakto. Datum 
+pashalne polne lune preberemo iz tabele, veliko noč pa praznujemo na nedeljo, 
+ki temu datumu sledi.
+
+\begin{table}
+    \centering
+    \caption{Datumi pashalnih polnih lun po gregorijanskem koledarju glede na izračunano epakto leta}
+    \label{gregorijanski-t}
+    \begin{tabular}{| c c | c c | c c |}
+        \hline
+        epakta & \makecell{pashalna \\ polna luna} & epakta & \makecell{pashalna \\ polna luna} & epakta & \makecell{pashalna \\ polna luna} \\ \hline
+        1 & 12.\ april & 11 & 2.\ april & 21 & 23.\ marec \\  
+        2 & 11.\ april & 12 & 1.\ april & 22 & 22.\ marec \\
+        3 & 10.\ april & 13 & 31.\ marec & 23 & 21.\ marec \\
+        4 & 9.\ april & 14 & 30.\ marec & 24 & 18.\ april \\
+        5 & 8.\ april & 15 & 29.\ marec & 25 & 17.\ ali 18.\ april \\
+        6 & 7.\ april & 16 & 28.\ marec & 26 & 17.\ april \\
+        7 & 6.\ april & 17 & 27.\ marec & 27 & 16.\ april \\
+        8 & 5.\ april & 18 & 26.\ marec & 28 & 15.\ april \\
+        9 & 4.\ april & 19 & 25.\ marec & 29 & 14.\ april \\
+        10 & 3.\ april & 20 & 24.\ marec & 0 & 13.\ april \\ \hline
+    \end{tabular}
+\end{table}
+
+Kot vidimo v tabeli, sta pri epakti 25 možna dva različna datuma. 
+Pravega izberemo na enega od ekvivalentnih načinov:
+\begin{itemize}
+    \item Če stoletje, v katerem se nahaja leto, za katerega določamo datum velike 
+        noči, vsebuje leto z epakto 24, izberemo 17. april, sicer pa 18.
+    \item Če je zlato število leta, za katerega določamo datum velike noči, strogo 
+        večje od 11, izberemo 17. april, sicer pa 18.
+\end{itemize}
+
+Dokažimo, da sta načina res ekvivalentna. %TODO dokaz; environment?
+\begin{align*}
+    \exists \text{ leto z epakto } e_g = 24 &\Leftrightarrow \exists \text{ leto z } d_l = 29 \\
+    &\Leftrightarrow d_l = (19 a_l + M) \bmod 30 = 29 \\
+    &\Leftrightarrow 19 a_l \bmod 30 + M = 29 \\
+    &\Leftrightarrow M = 29 - 19 a_l \bmod 30
+\end{align*}
+
+Dano leto $A$ ima epakto $e_g = 25$, torej $d = 28$ in ena od:
+\begin{itemize}
+    \item $19 a \bmod 30 = 29 \land M = 29$
+    \item $M = 28 - (19 a \bmod 30)$
+\end{itemize}
+
+Če prvo: $19 a \bmod 30 = 19 (a - 11 + 11) \bmod 30 = 29 + 19 (a - 11) \bmod 30 = 29$.
+Sledi: $19 (a - 11) \bmod 30 = 0$ in ob upoštevanju $0 \leq a \leq 18$ $a=11$.
+
+Če drugo: $M$ je za obe leti enak, ker sta obe v istem stoletju, torej
+\begin{align*}
+    29 - 19 a_l \bmod 30 = 28 - 19 a \bmod 30 \\
+    19 (a_l - a) \bmod 30 = 1 \\
+    19 (a_l - a + 11 - 11) \bmod 30 = 1 \\
+    19 (a_l - (a - 11)) \bmod 30 = 0 \\
+    a_l - (a - 11) \bmod 30 = 0
+\end{align*}
+
+Ob upoštevanju $0 \leq a, a_l \leq 18$ dobimo $a_l = a - 11$ in $a \geq 11$ oz.\ $a > 10$.
+
+Obrat: Če je za leto $A$ $a > 10$ in $e_g = 25$, je za to leto $d = 28$ in imata leti 
+$A - 11$ in $A + 8$ epakto $e_g = 24$.
+Eno izmed njiju je zagotovo v istem stoletju kot $A$.
+Res, velja: $a_l = (A - 11) \bmod 19 = (A + 8) \bmod 19 = a - 11$ (upoštevali smo $a > 10$)
+\begin{align*}
+    e_g &= (23 - d_l) \bmod 30 \\
+        &= (23 - (19 a_l + M) \bmod 30) \bmod 30 \\
+        &= (23 - 19 (a - 11) - M) \bmod 30 \\
+        &= (22 - 19 a - M) \bmod 30 \\
+        &= (22 - (19 a + M)) \bmod 30 = (22 - 28) \bmod 30 = 24
+\end{align*}
+
+\begin{zgled}
+   Določimo datum velike noči v letošnjem letu ($A = 2023$).
+   Ker smo v letu po 1582, uporabimo postopek za določanje datuma velike noči 
+   po gregorijanskem koledarju. 
+   
+   Zlato število tega leta je $$n_a = (A \bmod 19) + 1 = (2023 \bmod 19) + 1 = 10.$$
+   Julijanska epakta je potem enaka 
+   $$e_j = (11 \cdot (n_a - 1)) \bmod 30 = (11 \cdot (10 - 1)) \bmod 30 = 9.$$
+   Ker je leto 2023 v 21.\ stoletju, je $C = 21$ in $S = \lfloor \frac{3 \cdot C}{4} \rfloor = \lfloor \frac{3 \cdot 21}{4} \rfloor = 15$ 
+   ter $L = \lfloor \frac{8 \cdot C + 5}{25} \rfloor = \lfloor \frac{8 \cdot 21 + 5}{25} \rfloor = 6$.
+   Potem je gregorijanska epakta enaka 
+   $$e_g = (e_j - S + L + 8) \bmod 30 = (9 - 15 + 6 + 8) \bmod 30 = 8.$$
+   Nato iz tabele \ref{gregorijanski-t}
+   preberemo, da je bila letos pashalna polna luna 5.\ aprila, nato pa s pomočjo
+   koledarja ugotovimo, da je prva nedelja po tem datumu 9.\ april.
+\end{zgled}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Gaussov algoritem}
+
+Gauss v svojem delu podaja enostavnejši algoritem za izračun datuma velike 
+noči tako po julijanskem kot tudi po gregorijanskem koledarju. Najprej vpelje 
+nekaj oznak: 
+\begin{align*}
+    a &= A \bmod 19 \\
+    b &= A \bmod 4 \\
+    c &= A \bmod 7 \\
+    d &= (19 \cdot a + M) \bmod 30 \\
+    e &= (2 \cdot b + 4 \cdot c + 6 \cdot d + N) \bmod 7,
+\end{align*}
+pri čemer sta $M$ in $N$ za računanje datuma v julijanskem koledarju konstanti
+$M = 15$ in $N = 6$, za računanje datuma v gregorijanskem koledarju pa ju za leta 
+med $100 k$ in $100 k + 99$, pri čemer je $k \geq 16$, izračunamo na naslednji način: 
+\begin{enumerate}
+    \item Vpeljemo oznaki $p = \lfloor \frac{8k + 13}{25} \rfloor$ in
+       $q = \lfloor \frac{k}{4} \rfloor$.
+    \item Podamo $M = (15 + k - p - q) \bmod 30$ in $N = (4 + k - q) \bmod 7$
+\end{enumerate}
+Za leta med 1582 in 1599 vzamemo $k = 16$ in uporabimo zgornji postopek.
+
+Gauss trdi, da pri tako definiranih spremenljivkah veliko noč praznujemo na 
+$22 + d + e$. marec oz.\ v primeru, da je $22 + d + e > 31$, na $d + e - 9$. april.
+V nadaljevanju bomo $n$.\ marec za $n > 31$ razumeli kot $n - 31$.\ april in ne 
+bomo ločevali primerov.
+
+Pri tem Gauss za določanje datuma velike noči v gregorijanskem koledarju navaja 
+ti dve izjemi:
+\begin{itemize}
+    \item Če za datum velike noči dobimo 26. april, namesto tega vedno vzamemo 
+        19. april.
+    \item Če dobimo $d = 28$ in $e = 6$ ter število $11M+11$ pri deljenju s 
+        30 da ostanek, manjši od 19, namesto 25. aprila vzamemo 18.
+\end{itemize}
+
+\begin{zgled}
+    Določimo datum velike noči v letošnjem letu še z uporabo Gaussovega algoritma. 
+    Ponovno je $A = 2023$. Najprej določimo $M$ in $N$. Ker smo v letu, ko je v 
+    uporabi gregorijanski koledar, uporabimo formuli 
+    $$M = (15 + k - \lfloor \textstyle \frac{8k + 13}{25} \rfloor - \lfloor \frac{k}{4} \rfloor) \bmod 30 = (15 + 20 - \lfloor \frac{8 \cdot 20 + 13}{25} \rfloor - \lfloor \frac{20}{4} \rfloor) \bmod 30 = 24$$ 
+    in
+    $$N = (4 + k - \lfloor \textstyle \frac{k}{4} \rfloor) \bmod 7 = (4 + 20 - \lfloor \frac{20}{4} \rfloor) \bmod 7 = 5.$$
+    Določimo Gaussove $a$, $b$, $c$, $d$ in $e$:
+    \begin{align*}
+        a &= A \bmod 19 = 2023 \bmod 19 = 9 \\
+        b &= A \bmod 4 = 2023 \bmod 4 = 3 \\
+        c &= A \bmod 7 = 2023 \bmod 7 = 0 \\
+        d &= (19 \cdot a + M) \bmod 30 = (19 \cdot 9 + 24) \bmod 30 = 15 \\
+        e &= (2 \cdot b + 4 \cdot c + 6 \cdot d + N) \bmod 7 = (2 \cdot 3 + 4 \cdot 0 + 6 \cdot 15 + 5) \bmod 7 = 3
+    \end{align*}
+    Gaussov algoritem trdi, da veliko noč letos praznujemo $d + e - 9$.\ aprila, torej
+    9.\ aprila.
+\end{zgled}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Dokaz Gaussovega algoritma}
+
+Razmislimo, da podan algoritem velja. Začnimo pri julijanskem koledarju. 
+
+\subsection{Dokaz Gaussovega algoritma za julijanski koledar}
+Prvi korak algoritma je določanje vrednosti $a$, ki jo dobimo z deljenjem po modulu 19.
+To najdemo tudi v prej opisanem postopku. Z njim namreč določimo zlato število leta.
+Opazimo, da velja zveza $$n_a = a + 1.$$
+
+Datum pashalne polne lune smo potem prebrali iz tabele \ref{julijanski-t}.
+
+To tabelo zapišimo malo drugače, in sicer namesto datuma pashalne polne lune 
+zapišimo število dni od 21.\ marca do nje.
+
+\begin{table}
+    \centering
+    \caption{Število dni od 21.\ marca do pashalne polne lune po julijanskem koledarju glede na izračunano zlato število leta}
+    \label{julijanski-tm}
+    \begin{tabular}{| c c | c c | c c |}
+        \hline
+        \makecell{zlato \\ število} & \makecell{pashalna \\ polna luna} & \makecell{zlato \\ število} & \makecell{pashalna \\ polna luna} & \makecell{zlato \\ število} & \makecell{pashalna \\ polna luna} \\ \hline
+        1 & 15 & 8 & 28 & 15 & 11 \\  
+        2 & 4 & 9 & 17 & 16 & 0 \\
+        3 & 23 & 10 & 6 & 17 & 19 \\
+        4 & 12 & 11 & 25 & 18 & 8 \\
+        5 & 1 & 12 & 14 & 19 & 27 \\
+        6 & 20 & 13 & 3 & & \\
+        7 & 9 & 14 & 22 & & \\ \hline
+    \end{tabular}
+\end{table}
+
+Opazimo, da število v naslednji vrstici dobimo z alternirajočim prištevanjem 
+19 in odštevanjem 11, od koder sklepamo na prištevanje števila 19 in deljenje 
+po modulu 30. Ničlo najdemo pri $n_a = 16$. Datum pashalne polne lune v 
+julijanskem koledarju je torej $21 + d$.\ marec, kjer je 
+\begin{align*}
+    d &= 19 \cdot (n_a - 16) \bmod 30 \\
+    &= 19 \cdot (a - 15) \bmod 30 \\
+    &= (19 \cdot a - 19 \cdot 15) \bmod 30 \\
+    &= (19 \cdot a + 15) \bmod 30
+\end{align*}
+Opazimo, da je ta $d$ ravno Gaussov $d$.
+
+Pokazali smo, da je datum pashalne polne lune $21 + d$.\ marec, vendar veliko noč 
+praznujemo prvo nedeljo po tem datumu, tako da še nismo končali. Dobljenemu datumu 
+moramo prišteti še eno od števil med (vključno) 1 in 7. Veliko noč torej praznujemo 
+$21 + d + f'$. marca, kjer je $f' \in \left\{ 1, 2, 3, 4, 5, 6, 7 \right\}$, oz. 
+$22 + d + f$. marca, kjer je $f \in \left\{ 0, 1, 2, 3, 4, 5, 6 \right\}$, pri 
+čemer $f$ oz. $f'$ izberemo tako, da je ta dan nedelja. Opazimo, da tudi za  
+parameter $e$ v Gaussovem algoritmu velja $e \in \left\{ 0, 1, 2, 3, 4, 5, 6 \right\}$.
+
+Utemeljimo, da ta res vrne takšno število, da je $22 + d + e$. marec nedelja. 
+Za začetek potrebujemo datum, za katerega vemo, da je bila nedelja. Ker 
+določamo datum velike noči po julijanskem koledarju, vzamemo datum pred 
+4. oktobrom 1582, npr. 19. april 1500. \cite{weekday}
+Med 19. aprilom 1500 in $22 + d + e$. marcem leta $A$ je 
+$$d + e - 28 + i + 365(A - 1500)$$ 
+dni, kjer $i$ šteje prestopna leta med tema dvema letoma. 
+\footnote{$i$ je pravzaprav število dodatnih dni, ki se zaradi prestopnih let nahajajo 
+med tema dvema datumoma. 
+Ker je 29.\ februar vedno pred datumom, ki ga vrne algoritem, je to enako številu prestopnih let
+med letoma $A$ in 1500.}
+
+Velja: $i = \lfloor \displaystyle \frac{(A - 1500)}{4} \rfloor = \frac{A - 1500 - (A \bmod 4)}{4}$
+
+Število dni med 19. aprilom 1500 in $22 + d + e$. marcem leta $A$ je torej enako
+$$d + e - 28 + \frac{(A - 1500 - b)}{4} + 365(A - 1500).$$
+Ker želimo preveriti le, ali je $22 + d + e$.\ marec leta $A$ nedelja, je dovolj 
+preveriti, ali je $$d + e - 28 + \frac{(A - 1500 - b)}{4} + 365(A - 1500) \bmod 7 = 0.$$
+
+Velja:
+\begin{align*}
+    &d + e - 28 + \frac{(A - 1500 - b)}{4} + 365(A - 1500) \equiv \footnote[2]{$/+ (28 + \frac{7}{4} (A - 1500 - b))$} \\
+    &\equiv d + e + 2 A - 3000 - 2b + 365(A - 1500) \equiv \footnote[3]{$/ + (550494 - 364 A)$} \\
+    &\equiv d + e + 3 A - 6 - 2b \equiv \footnote[4]{$/ - (3 A - 3c)$} \\
+    &\equiv d + e + 3c - 6 - 2b \equiv \footnote[5]{$/ - (7d + 7c)$} \\
+    &\equiv e - 2b - 4c - 6d - 6 (\bmod 7)
+\end{align*}
+\footnotetext[2]{$/+ (28 + \frac{7}{4} (A - 1500 - b))$}
+\footnotetext[3]{$/ + (550494 - 364 A)$}
+\footnotetext[4]{$/ - (3 A - 3c)$}
+\footnotetext[5]{$/ - (7d + 7c)$}
+
+Ugotovimo, da je $22 + d + e$. marec leta $A$ nedelja le v primeru, ko je 
+$(e - 2b - 4c - 6d - 6) \bmod 7 = 0$, to pa velja natanko tedaj, ko je
+$e = (2b + 4c + 6d + 6) \bmod 7$, kar je ravno Gaussov $e$ za $N=6$.
+
+S tem smo utemeljili, da Gaussov algoritem velja za julijanski koledar. 
+Pokažimo, da velja tudi za gregorijanskega.
+
+
+\subsection{Dokaz Gaussovega algoritma za gregorijanski koledar}
+
+Določanje datuma velike noči tudi po gregorijanskem koledarju začnemo z določanjem zlatega 
+števila leta, za katero datum velike noči določamo. Kot prej opazimo, da je $$n_a = a + 1.$$
+
+Velja še $$e_j = (11 \cdot a) \bmod 30$$ in %TODO strah pred 0 smo že premagali, zato imamo epakto 0 (tudi v tabeli)
+\begin{align*}
+    e_g &= (e_j - S + L + 8) \bmod 30 \\
+        &= (((11 \cdot a) \bmod 30) - S + L + 8) \bmod 30 \\
+        &= (11a - S + L + 8) \bmod 30 \\
+        &= \textstyle (11a - \lfloor \frac{3 (k + 1)}{4} \rfloor + \lfloor \frac{8 (k + 1) + 5}{25} \rfloor + 8) \bmod 30 \\
+        &= \textstyle (11a - \frac{3 (k + 1) - (3 (k + 1) \bmod 4)}{4} + \lfloor \frac{8 (k + 1) + 5}{25} \rfloor + 8) \bmod 30 \\
+        &= \textstyle (11a - \frac{3k}{4} - \frac{3}{4} + \frac{((3 k + 3) \bmod 4)}{4} + \lfloor \frac{8 (k + 1) + 5}{25} \rfloor + 8) \bmod 30 \\
+        &= \textstyle (11a - \frac{3k}{4} - \frac{3}{4} + \frac{((-k + 3) \bmod 4)}{4} + \lfloor \frac{8 (k + 1) + 5}{25} \rfloor + 8) \bmod 30 \\
+        &= \textstyle (11a - \frac{3k}{4} - \frac{3}{4} - \frac{(((k \bmod 4) - 3) \bmod 4)}{4} + \lfloor \frac{8 (k + 1) + 5}{25} \rfloor + 8) \bmod 30 \\
+        &= \textstyle (11a - \frac{3k}{4} - \frac{3}{4} - \frac{(k \bmod 4) - 3}{4} + \lfloor \frac{8 (k + 1) + 5}{25} \rfloor + 8) \bmod 30 \\
+        &= \textstyle (11a - \frac{3k}{4} - \frac{(k \bmod 4)}{4} + \lfloor \frac{8 (k + 1) + 5}{25} \rfloor + 8) \bmod 30 \\
+        &= \textstyle (11a - k + \frac{k}{4} - \frac{(k \bmod 4)}{4} + \lfloor \frac{8 (k + 1) + 5}{25} \rfloor + 8) \bmod 30 \\
+        &= \textstyle (11a - k + \frac{k - (k \bmod 4)}{4} + \lfloor \frac{8 (k + 1) + 5}{25} \rfloor + 8) \bmod 30 \\
+        &= \textstyle (11a - k + \lfloor \frac{k}{4} \rfloor + \lfloor \frac{8 (k + 1) + 5}{25} \rfloor + 8) \bmod 30
+\end{align*}
+
+Glede na določeno epakto smo datum pashalne polne lune tudi v tem primeru prebrali 
+iz tabele, ki jo ponovno zapišemo drugače, in sicer kot prej namesto datuma pashalne
+polne lune pišemo število dni od 21.\ marca do nje. Dobimo:
+
+\begin{table}
+    \centering
+    \caption{Število dni od 21.\ marca do pashalne polne lune po gregorijanskem koledarju glede na izračunano epakto leta}
+    \label{gregorijanski-tm}
+    \begin{tabular}{| c c | c c | c c |}
+        \hline
+        epakta & \makecell{pashalna \\ polna luna} & epakta & \makecell{pashalna \\ polna luna} & epakta & \makecell{pashalna \\ polna luna} \\ \hline
+        1 & 22 & 11 & 12 & 21 & 2 \\  
+        2 & 21 & 12 & 11 & 22 & 1 \\
+        3 & 20 & 13 & 10 & 23 & 0 \\
+        4 & 19 & 14 & 9 & 24 & 28 \\
+        5 & 18 & 15 & 8 & 25 & 27 ali 28 \\
+        6 & 17 & 16 & 7 & 26 & 27 \\
+        7 & 16 & 17 & 6 & 27 & 26 \\
+        8 & 15 & 18 & 5 & 28 & 25 \\
+        9 & 14 & 19 & 4 & 29 & 24 \\
+        10 & 13 & 20 & 3 & 0 & 23 \\ \hline
+    \end{tabular}
+\end{table}
+
+Opazimo, da je datum pashalne polne lune (razen v primeru 
+$e_g = 25$ ali $e_g = 24$) $21 + ((23 - e_g) \bmod 30)$. marec.
+
+Če v dobljen datum vstavimo prejšnji rezultat in v njem prepoznamo Gaussove parametre,
+dobimo: 
+\begin{align*}
+    &21 + ((23 - e_g) \bmod 30) = \\
+    = &21 + ((23 - ((11a - k + \lfloor \frac{k}{4} \rfloor + \lfloor \frac{8 (k + 1) + 5}{25} \rfloor + 8) \bmod 30)) \bmod 30) \\
+    = &21 + ((23 - 11a + k - \lfloor \frac{k}{4} \rfloor - \lfloor \frac{8 (k + 1) + 5}{25} \rfloor - 8) \bmod 30) \\
+    = &21 + ((15 - 11a + k - p - q) \bmod 30) \\
+    = &21 + ((11a + M) \bmod 30) \\
+    = &21 + d
+\end{align*}
+
+Kot prej smo za datum pashalne polne lune dobili $21 + d$.\ marec. Podobno kot prej 
+utemeljimo tudi, da je izbira $e$ prava. Tokrat moramo za izhodišče izbrati neki 
+datum po 15. oktobru 1582. Kot Gauss bomo tudi mi vzeli nedeljo, 21. marec 1700. \cite{gauss,weekday}
+
+Število dni med 21. marcem 1700 in $22 + d + e$. marcem leta $A$ je enako 
+$$d + e + 1 + i + 365(A - 1700),$$ 
+kjer $i$ ponovno šteje prestopna leta med tema dvema datumoma, 
+\footnote{$i$ je pravzaprav število dodatnih dni zaradi prestopnih let.} 
+vendar v tem primeru
+(ob upoštevanju zaporedja prestopnih in neprestopnih let v gregorijanskem koledarju)
+velja $$i = \textstyle \frac{A - 1700 - (A \bmod 4)}{4} - C + 18 + \frac{C - 17 - ((C - 1) \bmod 4)}{4}.$$
+
+Pri tem smo s $C$ označili stoletje, v katerem se nahaja leto $A$.
+
+%TODO številčenje opomb
+
+Ker želimo preveriti le, ali je $22 + d + e$.\ marec leta $A$ nedelja, je dovolj 
+preveriti, ali je $$d + e + 1 + i + 365(A - 1700) \bmod 7 = 0.$$
+
+Velja: 
+\begin{align*}
+    &d + e + 1 + \textstyle \frac{A - 1700 - (A \bmod 4)}{4} - C + 18 + \frac{C - 17 - ((C - 1) \bmod 4)}{4} + 365 (A - 1700) \equiv \\
+    &\equiv d + e + 20 + \textstyle \frac{A - 1700 - b}{4} - k + \frac{k - 16 - (k \bmod 4)}{4} + 365(A - 1700) \equiv \\
+    &\equiv d + e + 20 + \textstyle \frac{A - b}{4} - 425 - k + \lfloor \frac{k}{4} \rfloor - 4 + 365A - 2065 \equiv \footnote[7]{$/ \frac{7}{4} (A - b)$} \\
+    &\equiv d + e + 4 + 3A - 2b - k + q \equiv \footnote[8]{$/ -(3A - 3c)$} \\
+    &\equiv e - (2 b + 4 c + 6 d + N) (\bmod 7)
+\end{align*}
+\footnotetext[7]{$/ \frac{7}{4} (A - b)$}
+\footnotetext[8]{$/ -(3A - 3c)$}
+
+Ugotovimo, da je $22 + d + e$. marec leta $A$ nedelja le v primeru, ko je 
+$e = (2b + 4c + 6d + 6) \bmod 7$, kar je ravno Gaussov $e$.
+
+Ustavimo se še pri izjemah, ki ju navaja Gaussov algoritem za izračun datuma 
+velike noči po gregorijanskem koledarju. Spomnimo se, da smo pri izpeljavi 
+formule v gregorijanskem koledarju predpostavili, da $e_g$ ni enak 24 ali 25. 
+Ta dve izjemi pokrivata ravno ta dva primera.
+
+Prva izjema pravi: ``Če za datum velike noči dobimo 26.\ april, namesto tega vedno 
+vzamemo 19.\ april.''
+
+Gaussov algoritem vrne 26. april natanko tedaj, ko je $d + e - 9 = 26$. Ker je 
+$d$ ostanek pri deljenju s 30, $e$ pa ostanek pri deljenju s 7, je edina možnost 
+za to $d = (19 a + M) \bmod 30 = 29$ in $e = 6$. 
+Potem velja:
+\begin{align*}
+    e_g &= (11a - k + p + q + 8) \bmod 30 = \\
+        &= (-19 a + 23 - (15 + k - p - q)) \bmod 30 = \\
+        &= (23 - (19 a + M)) \bmod 30 = \\
+        &= (23 - ((19 a + M) \bmod 30)) \bmod 30 = \\
+        &= (23 - d) \bmod 30 \\
+        &= (23 - 29) \bmod 30 \\
+        &= 24 %TODO vsakič nova vrstica?
+\end{align*}
+V tem primeru je torej epakta 24.
+
+Velja tudi obratno, če je gregorijanska epakta leta $e_g = (23 - d) \bmod 30 = 24$, 
+je za to leto $d = 29$.
+
+Za $d = 29$ oz.\ $e_g = 24$ je datum pashalne polne lune po tabeli 18.\ april, 
+Gaussov algoritem pa za datum pashalne polne lune določi $d - 10$.\ april, torej 
+19. april. Ker veliko noč praznujemo na prvo nedeljo po tem datumu, se bosta 
+izračunana datuma velike noči razlikovala le v primeru, ko je 19.\ april nedelja 
+oz.\ Gaussov $e = 6$.
+Takrat bo namreč Gaussov algoritem za datum velike noči vrnil 26.\ april, pravi 
+datum velike noči glede na tabele pa je 19.\ april. Prva izjema torej popravlja 
+ravno to napako.
+
+Druga izjema pravi: ``Če dobimo $d = 28$ in $e = 6$ ter število $11M + 11$ pri deljenju
+s 30 da ostanek, manjši od 19, namesto 25. aprila vzamemo 18.''
+
+Razmislimo, kdaj dobimo $d=28$. Velja:
+\begin{align*}
+    d &= (19 a + M) \bmod 30 = \\
+    &= ((19 a \bmod 30) + (M \bmod 30)) \bmod 30, 
+\end{align*}
+torej imamo dve možnosti:
+\begin{itemize} %TODO enumerate?
+    \item $19 a \bmod 30 = M \bmod 30 = 29$
+    \item $(19 a \bmod 30) + (M \bmod 30) = 28$
+\end{itemize}
+
+V prvem primeru je $(11M + 11) \bmod 30 = (11 \cdot 29 + 11) \bmod 30 = 0$ in 
+$19 a \bmod 30 = 29$, torej velja: 
+\begin{align*}
+    19 a \bmod 30 &= 19 (a - 11 + 11) \bmod 30 = \\
+        &= 29 + (19 (a - 11) \bmod 30) = 29, 
+\end{align*}
+$a = 11$ in $n_a = 12$.
+
+V drugem primeru je $M \bmod 30 = 28 - (19 a \bmod 30)$, torej velja:
+\begin{align*}
+    (11 M + 11) \bmod 30 &= (11 (28 - (19 a \bmod 30)) + 11) \bmod 30 = \\
+        &= (19 - (11 \cdot 19 a \bmod 30)) \bmod 30 = \\
+        &= (19 - 11 \cdot 19 a) \bmod 30 = \\
+        &= (19 - 11 \cdot 19 \cdot (a - 11 + 11)) \bmod 30 = \\
+        &= (-11 \cdot 19 \cdot (a - 11)) \bmod 30 = \\
+        &= (a - 11) \bmod 30
+\end{align*}
+
+Opazimo, da je $(11M + 11) \bmod 30 = (a - 11) \bmod 30 < 19$ natanko tedaj, ko je 
+$a > 10$ oz.\ $n_a = a + 1 > 11$.
+
+V obeh primerih je torej $(11M + 11) \bmod 30 < 19$ natanko tedaj, ko je $n_a > 11$.
+
+Kot prej iz enačbe $e_g = (23 - d) \bmod 30$ sklepamo, da je $d = 28$ natanko tedaj, 
+ko je gregorijanska epakta leta enaka 25.
+
+Spomnimo se, da smo pri epakti 25 v tabeli \ref{gregorijanski-t}
+imeli dva možna datuma pashalne polne lune, 
+pri čemer smo pravega izbrali glede na zlato število. Če je veljalo $n_a > 11$, smo 
+za datum pashalne polne lune vzeli 17.\ april, sicer pa 18.\ april.
+
+Gaussov algoritem ne glede na velikost zlatega števila v tem primeru za datum 
+pashalne polne lune vedno vrne $d - 10$.\ april oz.\ 18.\ april. Razlika v 
+izračunanem datumu pashalne polne lune se torej pojavi le v primeru, ko je $n_a > 11$
+oz.\ ekvivalentno $(11M + 11) \bmod 30 < 19$. Podobno kot prej razmislimo, da to 
+na datum velike noči vpliva le v primeru, ko je 18.\ april nedelja oz.\ ko je 
+Gaussov parameter $e = 6$. %TODO parameter?
+
+Druga izjema Gaussovega algoritma popravlja to napako.
+
+
+\begin{zgled}
+    Za konec določimo še Gaussov rojstni dan. 
+\end{zgled} %TODO primer
+
+\nocite{*}
+
+\bibliographystyle{siam} %TODO literatura
+\bibliography{gaussov-algoritem-za-racunanje-datuma-velike-noci_clanek}
+
+\end{document}

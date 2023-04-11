@@ -1,0 +1,305 @@
+\begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+Najprej se moramo dogovoriti, kaj sploh pomeni \emph{prva spomladanska} 
+polna luna. 
+%
+%TODO Pomlad namreč po vsem svetu ne nastopi istočasno. Ko se na 
+% severni polobli začne pomlad, se na južni začne jesen. Tu je seveda mišljen
+% začetek pomladi na severni polobli, ki nastopi konec marca. Velika noč se 
+% tudi na južni polobli praznuje na enak dan kot na severni (in ne v septembru 
+% oz.\ oktobru).
+%
+Astronomsko se pomlad začne ob spomladanskem enakonočju, torej ob trenutku, 
+ko ekvatorialna ravnina Zemlje seka središče Sonca. To se vsako leto zgodi 
+med 18.\ in 22.\ marcem. V definiciji datuma velike noči, ki jo uporablja 
+Katoliška cerkev, tega ne upoštevamo in datum določamo glede na prvo 
+polno luno po 20.\ marcu, ki ni nujno tudi prva polna luna po astronomskem
+začetku pomladi. Za določanje datuma velike noči relevantna polna luna tako 
+nastopi najhitreje 21.\ marca.
+
+Vendar tu težav še ni konec. Dogovoriti se moramo še, kaj je to \emph{polna
+luna}. Astronomsko je to trenutek, ko se središče Zemlje nahaja na zveznici 
+med središčem Sonca in središčem Lune. Ker imamo na Zemlji različne časovne 
+pasove, lahko ta trenutek v dveh različnih časovnih pasovih pade na različna 
+datuma. Da bi se izognili zmedi, se je Katoliška cerkev glede na napovedi 
+astronomov junija 325 dogovorila za postopek izračuna tega datuma in 
+nekatere rezultate zapisala v tabele. K temu postopku se bomo še vrnili pri
+utemeljevanju Gaussovega algoritma. Tako določeni datumi se največkrat 
+ujemajo z dejanskim datumom astronomske polne lune, v splošnem pa od njega ne 
+odstopajo za več kot 3 dni. Velika noč se tako po vsem svetu praznuje na 
+isti dan ne glede na časovni pas, ki mu kraj pripada.
+
+Polno luno, ki jo upoštevamo pri določanju datuma velike noči (torej prvo 
+polno luno po 20.\ marcu glede na ta postopek) imenujemo \emph{pashalna 
+polna luna}. Veliko noč tako praznujemo na prvo nedeljo po pashalni polni luni.
+Glavni problem pri določanju datuma velike noči je torej določiti datum 
+pashalne polne lune.
+
+%TODO preveri začetnice sonce luna zemlja
+%TODO glede na gregorijanski koledar
+%TODO dodaj tabelo
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Postopek}
+
+Določanje datuma velike noči po julijanskem koledarju je dokaj enostavna 
+naloga. Julijanski koledar sestavljajo običajna leta, dolga 365 dni, in 
+prestopna leta, dolga 366 dni, pri čemer je vsako s 4 deljivo leto 
+prestopno. V povprečju tako eno leto v julijanskem koledarju traja 365,25
+dni, kar je približno enako dolžini enega tropskega leta (času med 
+zaporednima zimskima solsticijema). %TODO definicija tropskega leta
+
+Že v starem veku so vedeli, da 19 tropskih let traja skoraj natanko toliko 
+kot 235 luninih mesecev (čas med zaporednima praznima lunama). Ker je 
+dolžina leta v julijanskem koledarju približno enaka dolžini tropskega leta, 
+od tod sledi, da se zaporedje datumov v julijanskem koledarju, na katere bo 
+luna prazna, vsakih 19 let periodično ponavlja. Ker nas pri določanju datuma
+velike noči zanima le prva polna luna po 20.\ marcu, polna luna pa nastopi 
+13 dni po prazni, je vsako leto relevanten le datum prve prazne lune po 7.\ 
+marcu. Dobimo zaporedje %TODO iz vira, lahko tabela
+
+Ker se to vsakih 19 let periodično ponovi, lahko letu glede na položaj v tem 
+ciklu pripišemo število med 1 in 19. To število imenujemo \emph{zlato število} 
+in ga izračunamo po formuli $a = (l \bmod 19) + 1$, kjer smo leto označili $l$ 
+in zlato število $a$.
+
+Zaporedje datumov praznih lun v letih, katerih zlata števila se ujemajo, je
+(približno) enako. Zgornje ocene tega datuma uporabimo pri izračunu datuma 
+pashalne polne lune v julijanskem koledarju. Če poznamo zlato število danega 
+leta, lahko datum pashalne polne lune najdemo v tabeli. 
+Velikonočna nedelja je potem prva nedelja za tem datumom.
+
+Ker se dolžina leta po julijanskem koledarju ni skladala z dolžino tropskega
+leta, so v koledar uvedli nekatere popravke. Nov, gregorijanski koledar tako
+kot julijanskega sestavljajo običajna, 365 dni dolga leta in prestopna, 366
+dni dolga leta, le da prestopno leto nastopi vsako s 4 deljivo leto, ki ni 
+hkrati deljivo tudi s 100, pri tem pa so leta, ki so deljivo s 400, vseeno 
+prestopna. 
+
+Izračun datuma velike noči pa gregorijanskem koledarju je bolj zapleten. 
+Poleg reforme koledarja so namreč uvedli tudi reformo postopka določanja 
+datuma velike noči. Metonski cikel se je namreč izkazal za netočnega, poleg 
+tega pa je ta z gregorijanskim koledarjem še slabše usklajen kot z julijanskim.
+
+%TODO opomba z dolžino luninega meseca
+% Če to oceno
+% prenesemo v julijanski koledar, dobimo dolžino luninega meseca 
+% $\frac{19 \cdot 365,25}{235} = 29,53085$ dni.
+% Prava dolžina luninega meseca je približno 29,53059 dni.
+
+V ta namen so v postopek določanja datuma velike noči uvedli epakto. To je 
+mera za starost lune na določen dan in je enaka številu dni od dneva, ko je 
+luna prvič vidna (to je praviloma dan po prazni luni).
+V julijanskem koledarju epakto leta definiramo kot epakto lune na 22.\ marec,
+v gregorijanskem koledarju pa kot epakto lune ob začetku leta. 
+
+Epakto lahko izračunamo s pomočjo zlatega števila.
+Ob predpostavki, da za julijanski koledar velja metonski cikel, velja 
+naslednja relacija: $e' = (11 \cdot (a - 1)) \bmod 30$
+Epakta je potem enaka $e'$ razen v primer, ko je $e' = 0$ in namesto 0 raje 
+vzamemo 30 (včasih ljudje res niso marali ničle).
+Ker imamo le 19 možnih zlatih števil, je tudi različnih vrednosti epakte 19 
+-- 1, 3, 4, 6, 7, 9, 11, 12, 14, 15, 17, 18, 20, 22, 23, 25, 26, 28 in 30.
+
+%TODO pomen oznak
+%TODO definiraj metonski cikel
+
+V gregorijanskem koledarju računanje epakte prilagodimo in uvedemo nekaj 
+popravkov, da bo izračunana vrednost čim bližje pravi, astronomsko določeni. 
+Epakto v gregorijanskem koledarju določimo po spodnjem postopku, pri čemer so
+vsa deljenja celoštevilska (vzamemo spodnji celi del količnika).
+\begin{enumerate}
+   \item Uporabimo formulo za julijanski koledar $e_j = (11 \cdot (a - 1)) \bmod 30$
+   \item Uvedemo solarno enačbo $S = \frac{3 \cdot cen}{4}$, kjer smo s $cen$
+      označili stoletje, ki mu pripada leto, katerega datum velike noči 
+      računamo. Ta odraža razliko med gregorijanskim in julijanskim koledarjem
+      in se vsako leto, ki ni prestopno, poveča za 1.
+   \item Uvedemo lunarno enačbo $L = \frac{8 \cdot cen + 5}{25}$, ki odraža
+      napako pri uporabi metonskega cikla v julijanskem koledarju in se vsakih
+      2500 let osemkrat poveča za 1
+   \item Izračunamo $e_g' = e_j - S + L + 8$. Pri tem je 8 konstanta, ki 
+      jo potrebujemo zaradi definicije gregorijanske epakte na novo leto, da dejansko pade na novo leto
+   \item Gregorijanska epakta je potem enaka $e_g' \bmod 30$, pri čemer ponovno
+      namesto 0 vzamemo 30.
+\end{enumerate}
+Kljub temu da je možnih julijanskih epakt le 19, pa gregorijanska epakta lahko
+zavzame poljubno vrednost med 1 in 30.
+
+Datum velike noči po gregorijanskem koledarju potem določimo glede na epakto.
+Datum pashalne polne lune preberemo iz tabele, veliko noč pa praznujemo na 
+nedeljo, ki temu datumu sledi.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Kdaj sploh praznujemo veliko noč?}
+
+Da bomo lahko razumeli Gaussov algoritem za določanje datuma velike noči, 
+moramo najprej vedeti, kdaj sploh praznujemo veliko noč. Naivna in splošno 
+znana ``definicija'' tega datuma je prva nedelja po prvi spomladanski polni 
+luni, a ta ni natančna.
+%TODO enojni ali dvojni narekovaji pri definiciji
+
+Če želimo podati natančnejšo definicijo, se moramo dogovoriti, kako merimo 
+čas oz.\ izbrati ustrezen koledar.
+
+Koledarji navadno temeljijo na astronomskih opazovanjih.
+V času Jezusovega živeljenja so na področju, kjer je živel, uporabljali 
+nenatančen hebrejski koledar, ki je temeljil na opazovanju lune. Obsegal je
+12 mesecev, pri čemer se je vsak začel ob prazni luni. Ker je po določenem
+času prišlo do zamika glede na gibanje Zemlje okoli Sonca (isti mesec ni vedno 
+padel v isti letni čas), so po potrebi dodali še trinajsti mesec. To 
+dodajanje ni bilo sistematično, temveč so se o njem odločali sproti. 
+Zato je za oddaljene datume v hebrejskem koledarju danes nemogoče določiti 
+datum po našem štetju.
+
+O datumu Jezusovega križanja se je ohranilo le to, da se je zgodilo tik 
+pred pasho, judovskim praznikom, ki so ga začeli praznovati 15. dne 
+pomladnega meseca nisana.
+%TODO moram razlagati astronomske pojme? prazna luna, polna luna
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Kdaj sploh praznujemo veliko noč?}
+
+Da bomo lahko razumeli Gaussov algoritem za določanje datuma velike noči, 
+moramo najprej vedeti, kdaj sploh praznujemo veliko noč. Naivna in splošno 
+znana ``definicija'' tega datuma je prva nedelja po prvi spomladanski polni 
+luni, a ta ni natančna.
+%TODO enojni ali dvojni narekovaji pri definiciji
+
+Sprva je datum velike noči določal papež, leta 325 pa so se odločili, da 
+poiščejo bolj sistematičen način določanja datuma velike noči. Ta je 
+temeljil na astronomskih opazovanjih
+%TODO moram razlagati astronomske pojme? prazna luna, polna luna
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Gaussov algoritem za določanje datuma velike noči}
+
+Gauss v svojem delu navaja naslednji algoritem za izračun datumov velike noči v
+letih med 1700 in 1899:
+\begin{enumerate}
+   \item Najprej leto, za katero želimo izračunati datum velike noči, delimo z
+      19, 4 in 7 ter ostanke pri deljenju zaporedoma označimo z $a$, $b$ in $c$.
+      Na kvociente se ne oziramo. Enako velja tudi za vsa ostala deljenja tega
+      algoritma.
+   \item Število $19 \cdot a + 23$ delimo s 30 in ostanek pri deljenju označimo z $d$.
+   \item Za leta med 1700 in 1799 s 7 delimo število $2 \cdot b + 4 \cdot c + 6 \cdot d + 3$,
+      za leta med 1800 in 1899 pa število $2 \cdot b + 4 \cdot c + 6 \cdot d + 4$. 
+      V obeh primerih ostanek pri deljenju označimo z $e$.
+\end{enumerate}
+%TODO označimo a ali označimo z a?
+Veliko noč potem praznujemo $22 + d + e$.\ marca oz.\ , kadar je število $d + e$ 
+večje od 9, $d + e - 9$.\ aprila.
+%TODO 22 + d + e.? slogovno kako pika?
+%TODO oz., ??S
+
+\begin{zgled}
+   Gaussov rojstni dan
+\end{zgled}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Metonski cikel}
+
+Že v starem veku so vedeli, da 19 tropskih let (čas med zaporednima
+zimskima solsticijema) traja skoraj natanko toliko kot 235 luninih mesecev 
+(čas med zaporednima praznima lunama). 
+
+Julijanski koledar sestavljajo običajna leta, dolga 365 dni, in prestopna
+leta, dolga 366 dni. V povprečju tako eno leto v julijanskem koledarju traja
+365,25 dni, kar je približno toliko kot dolžina enega tropskega leta. Od tod 
+dobimo dolžino luninega meseca $\frac{19 \cdot 365,25}{235} = 29,53085$ dni.
+Prava dolžina luninega meseca je približno 29,53059 dni.
+
+Če začnemo s poznano prazno luno, lahko v alternirajočih razmikih po 30 in 29 
+dni razporedimo anslednje prazne lune za naslednjih 19 let. Ta vzorec poda
+povprečno dolžino luninega meseca 29,5 dni, kar je malo prekratko, zato 
+dodamo ``prestopne meesece'' -- 6 mesecev po 30 dni in enega po 29. Te 
+vstavimo v izbrane intervale, da zaporedje metonskih praznih lun ohranimo čim
+bližje datumov dejanskih polnih lun. Metonski cikel trdi, da se ta vzorec 
+ponovi natanko vsakih 19 let.
+
+Na podlagi metonskih praznih lun določimo zaporedje prvih polnih lun po 20.\ 
+marcu (le te so pomembne za določitev datuma velike noči; važne so tiste prazne, 
+ki jim sledi polna luna po 20 marcu). V devetnajstletnem 
+ciklu te padejo na:
+%TODO kdaj -- tabela
+Gaussov a torej določa le, kam v ta cikel pade želeno leto. (leto mod 19 = a),
+torej katera od zgoraj naštetih polnih lun je relevantna.
+
+Na podlagi te zveze
+ \emph{Metonski cikel}.
+
+%TODO - razlaga za lunine mesece in sončeva leta glede na sonce/zvezde oz. glede na zemljo/sonce
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Koledarji}
+
+Julijanski, gregorijanski, judovski
+
+
+Da pa bomo lahko
+odgovorili na to vprašanje, se moramo dogovoriti, kako merimo čas oz.\ 
+izbrati ustrezen koledar.
+
+Koledarji navadno temeljijo na astronomskih opazovanjih. Pri tem so pomembni
+naslednji pojmi:
+\begin{definicija}
+   \emph{Enakonočje} ali \emph{ekvinokcij} je trenutek, ko ekvatorialna 
+   ravnina Zemlje seka središče Sonca.
+\end{definicija}
+V enem obhodu Zemlje okoli Sonca se to zgodi dvakrat. Tako ločimo 
+\begin{definicija}
+   soncevo leto
+\end{definicija}
+\begin{definicija}
+   lunin mesec
+\end{definicija}
+\begin{definicija}
+   polna luna
+\end{definicija}
+
+V času Jezusovega življenja so na področju, kjer je živel, uporabljali 
+nenatančen hebrejski koledar. Ta se 
+
+
+
+\section*{viri}
+Datum velike noči:
+
+https://web.archive.org/web/20081217101213/http://www.assa.org.au/edm.html
+
+https://web.archive.org/web/20081029062823/http://users.sa.chariot.net.au/~gmarts/easter.htm
+
+https://www.newadvent.org/cathen/05224d.htm search Sanhedrin
+
+https://web.archive.org/web/20081103111329/http://www.smart.net/~mmontes/ec-cal.html
+
+https://web.archive.org/web/20081002031029/http://www.tondering.dk/claus/calendar.html
+
+
+
+Metonski cikel:
+
+https://de.wikipedia.org/wiki/Meton-Zyklus
+
+\end{document}
